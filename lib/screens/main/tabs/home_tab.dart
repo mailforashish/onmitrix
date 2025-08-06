@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onmitrix/utils/hide_status.dart';
+import 'package:onmitrix/widgets/dialogs/selection_dialog.dart';
 import '../../../models/monthly_overview_data.dart';
 import '../../../models/overview_card_data.dart';
 import '../../../models/money_overview_data.dart';
@@ -62,6 +63,15 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       color: Colors.purple,
       buttonText: '',
     ),
+  ];
+
+  String _selectedYear = '2025-2026';
+  final List<String> _years = [
+    '2023-2024',
+    '2024-2025',
+    '2025-2026',
+    '2026-2027',
+    '2027-2028'
   ];
 
   final List<MetricCardData> _metricCards = [
@@ -135,7 +145,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       'Upload Statement',
       Icons.upload_file,
       const Color(0xFF2B4380),
-          () {
+      () {
         debugPrint('Upload Statement tapped');
         // Add your upload statement logic here
       },
@@ -144,7 +154,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       'Add Income',
       Icons.add,
       Colors.green,
-          () {
+      () {
         debugPrint('Add Income tapped');
         // Add your income logic here
       },
@@ -153,7 +163,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       'Add Expense',
       Icons.remove,
       Colors.redAccent,
-          () {
+      () {
         debugPrint('Add Expense tapped');
         // Add your expense logic here
       },
@@ -162,7 +172,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       'Add Investment',
       Icons.trending_up,
       Colors.blue,
-          () {
+      () {
         debugPrint('Add Investment tapped');
         // Add your investment logic here
       },
@@ -171,7 +181,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       'View Transactions',
       Icons.format_list_bulleted,
       Colors.grey[700]!,
-          () {
+      () {
         debugPrint('View Transactions tapped');
         // Add your transactions view logic here
       },
@@ -180,7 +190,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       'View Categories',
       Icons.pie_chart,
       Colors.orange,
-          () {
+      () {
         debugPrint('Expense Categories tapped');
         // Add your categories logic here
       },
@@ -204,6 +214,20 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       duration: const Duration(milliseconds: 1000),
     );
     _controller.forward();
+  }
+
+  void _showYearSelector() async {
+    await SelectionDialog.show(
+      context: context,
+      title: 'Select Financial Year',
+      items: _years,
+      selectedItem: _selectedYear,
+      onSelect: (year) {
+        setState(() {
+          _selectedYear = year;
+        });
+      },
+    );
   }
 
   @override
@@ -399,15 +423,18 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                             border: Border.all(color: Colors.grey[300]!),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Row(
-                            children: const [
-                              Text(
-                                '2025-2026',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              SizedBox(width: 8),
-                              Icon(Icons.arrow_drop_down),
-                            ],
+                          child: InkWell(
+                            onTap: _showYearSelector,
+                            child: Row(
+                              children: [
+                                Text(
+                                  _selectedYear,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_drop_down),
+                              ],
+                            ),
                           ),
                         ),
                       ],
