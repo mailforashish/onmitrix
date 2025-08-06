@@ -410,17 +410,17 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                     AnimationUtils.slideTransition(
                       animation: _controller,
                       direction: SlideDirection.right,
-                      child: SizedBox(
-                        height: (cardHeight * 2) + 12,
-                        // Height for two rows of cards
-                        child: ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: EdgeInsets.zero,
-                          itemCount: (_metricCards.length / 2).ceil(),
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, rowIndex) {
-                            return Row(
+                      child: Column(
+                        children: List.generate(
+                          (_metricCards.length / 2).ceil(),
+                          (rowIndex) => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: rowIndex <
+                                      (_metricCards.length / 2).ceil() - 1
+                                  ? 12
+                                  : 0,
+                            ),
+                            child: Row(
                               children: [
                                 Expanded(
                                   child: MetricCard(
@@ -456,8 +456,8 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                                     ),
                                   ),
                               ],
-                            );
-                          },
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -468,31 +468,26 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
               // Money Overview Section
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  height: (cardHeight * 1.3) + 12,
-                  child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.zero,
-                    itemCount: _moneyOverviewCards.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 12),
-                    itemBuilder: (context, index) {
-                      final cardData = _moneyOverviewCards[index];
-                      return SizedBox(
-                        width: (MediaQuery.of(context).size.width - 44) / 2,
-                        // (screen width - (padding + separator)) / 2
-                        child: MoneyOverviewCard(
-                          title: cardData.title,
-                          total: cardData.total,
-                          pending: cardData.pending,
-                          overdue: cardData.overdue,
-                          color: cardData.color,
-                          buttonText: cardData.buttonText,
-                          onPressed: cardData.onPressed,
+                child: Row(
+                  children: List.generate(
+                    _moneyOverviewCards.length,
+                    (index) => Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right:
+                              index < _moneyOverviewCards.length - 1 ? 12 : 0,
                         ),
-                      );
-                    },
+                        child: MoneyOverviewCard(
+                          title: _moneyOverviewCards[index].title,
+                          total: _moneyOverviewCards[index].total,
+                          pending: _moneyOverviewCards[index].pending,
+                          overdue: _moneyOverviewCards[index].overdue,
+                          color: _moneyOverviewCards[index].color,
+                          buttonText: _moneyOverviewCards[index].buttonText,
+                          onPressed: _moneyOverviewCards[index].onPressed,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
