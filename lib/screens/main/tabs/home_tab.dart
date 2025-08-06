@@ -102,7 +102,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     ),
     QuickAction(
       'View Transactions',
-      Icons.list,
+      Icons.format_list_bulleted,
       Colors.grey[700]!,
       () {
         debugPrint('View Transactions tapped');
@@ -110,7 +110,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       },
     ),
     QuickAction(
-      'Expense Categories',
+      'View Categories',
       Icons.pie_chart,
       Colors.orange,
       () {
@@ -618,7 +618,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                       ),
                     ),
                     const SizedBox(height: 8),
-
                     // Container with decoration
                     Container(
                       width: double.infinity,
@@ -634,26 +633,52 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                           ),
                         ],
                       ),
-                      child: SizedBox(
-                        height: 40,
-                        child: AnimationUtils.slideTransition(
-                          animation: _controller,
-                          direction: SlideDirection.right,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: _quickActions.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(width: 12),
-                            itemBuilder: (context, index) {
-                              final action = _quickActions[index];
-                              return ActionButton(
-                                text: action.text,
-                                icon: action.icon,
-                                color: action.color,
-                                onPressed: action.onPressed,
-                              );
-                            },
+                      child: AnimationUtils.slideTransition(
+                        animation: _controller,
+                        direction: SlideDirection.right,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: List.generate(
+                              (_quickActions.length / 2).ceil(),
+                              (rowIndex) => Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: rowIndex <
+                                          (_quickActions.length / 2).ceil() - 1
+                                      ? 12
+                                      : 0,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ActionButton(
+                                        text: _quickActions[rowIndex * 2].text,
+                                        icon: _quickActions[rowIndex * 2].icon,
+                                        color:
+                                            _quickActions[rowIndex * 2].color,
+                                        onPressed: _quickActions[rowIndex * 2]
+                                            .onPressed,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    if (rowIndex * 2 + 1 < _quickActions.length)
+                                      Expanded(
+                                        child: ActionButton(
+                                          text: _quickActions[rowIndex * 2 + 1]
+                                              .text,
+                                          icon: _quickActions[rowIndex * 2 + 1]
+                                              .icon,
+                                          color: _quickActions[rowIndex * 2 + 1]
+                                              .color,
+                                          onPressed:
+                                              _quickActions[rowIndex * 2 + 1]
+                                                  .onPressed,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
