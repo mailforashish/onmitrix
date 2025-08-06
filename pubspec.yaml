@@ -52,6 +52,9 @@ flutter:
     - assets/images/chart.svg
     - assets/images/sync.svg
     - assets/images/clock.svg
+    - assets/images/person.svg
+    - assets/images/category.svg
+    - assets/images/feedback.svg
     - assets/animations/loading.json
 
   fonts:

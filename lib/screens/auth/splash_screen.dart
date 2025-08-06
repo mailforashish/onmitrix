@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:onmitrix/utils/hide_status.dart';
 import '../../utils/animation_utils.dart';
 import '../../utils/session_manager.dart';
 import 'login_screen.dart';
@@ -21,17 +22,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    
-    // Set system UI overlay style
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF2B4380),
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.black,
-        systemNavigationBarIconBrightness: Brightness.light,
-      ),
+    StatusBarConfig.setCustomStatusBar(
+      statusBarColor: Color(0xFF2B4380),
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
     );
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),

@@ -6,6 +6,7 @@ import '../../widgets/inputs/custom_text_input.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../main/main_screen.dart';
 import 'signup_screen.dart';
+import '../../../utils/hide_status.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
+    StatusBarConfig.setLightStatusBar();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),

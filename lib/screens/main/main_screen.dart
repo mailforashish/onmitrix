@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../main/tabs/home_tab.dart';
 import '../main/tabs/income_tab.dart';
 import '../main/tabs/expenses_tab.dart';
-import '../main/tabs/my_account_tab.dart';
+import '../main/tabs/more_tab.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
     const HomeTab(),
     const IncomeTab(),
     const ExpensesTab(),
-    const MyAccountTab(),
+    const MoreTab(),
   ];
 
   @override
@@ -67,9 +67,9 @@ class _MainScreenState extends State<MainScreen> {
               label: 'Expenses',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Account',
+              icon: Icon(Icons.more_horiz),
+              activeIcon: Icon(Icons.more_horiz),
+              label: 'More',
             ),
           ],
         ),

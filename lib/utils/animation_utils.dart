@@ -90,6 +90,42 @@ class AnimationUtils {
   }
 
   /// Creates a slide transition animation
+  /// Builds a slide animation for list items
+  static Widget buildSlideAnimation({
+    required int index,
+    required Widget child,
+  }) {
+    return AnimatedBuilder(
+      animation: Tween<double>(begin: 0, end: 1).animate(
+        CurvedAnimation(
+          parent: AlwaysStoppedAnimation(1.0),
+          curve: Interval(
+            index * 0.1,
+            1.0,
+            curve: Curves.easeOut,
+          ),
+        ),
+      ),
+      builder: (context, child) => SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(1.0, 0.0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: AlwaysStoppedAnimation(1.0),
+            curve: Interval(
+              index * 0.1,
+              1.0,
+              curve: Curves.easeOut,
+            ),
+          ),
+        ),
+        child: child,
+      ),
+      child: child,
+    );
+  }
+
   static Widget slideTransition({
     required Animation<double> animation,
     required Widget child,

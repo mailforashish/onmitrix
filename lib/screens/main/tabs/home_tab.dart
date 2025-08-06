@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onmitrix/utils/hide_status.dart';
 import '../../../models/monthly_overview_data.dart';
 import '../../../models/overview_card_data.dart';
 import '../../../models/money_overview_data.dart';
@@ -60,63 +61,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       icon: Icons.library_add,
       color: Colors.purple,
       buttonText: '',
-    ),
-  ];
-
-  final List<QuickAction> _quickActions = [
-    QuickAction(
-      'Upload Statement',
-      Icons.upload_file,
-      const Color(0xFF2B4380),
-      () {
-        debugPrint('Upload Statement tapped');
-        // Add your upload statement logic here
-      },
-    ),
-    QuickAction(
-      'Add Income',
-      Icons.add,
-      Colors.green,
-      () {
-        debugPrint('Add Income tapped');
-        // Add your income logic here
-      },
-    ),
-    QuickAction(
-      'Add Expense',
-      Icons.remove,
-      Colors.redAccent,
-      () {
-        debugPrint('Add Expense tapped');
-        // Add your expense logic here
-      },
-    ),
-    QuickAction(
-      'Add Investment',
-      Icons.trending_up,
-      Colors.blue,
-      () {
-        debugPrint('Add Investment tapped');
-        // Add your investment logic here
-      },
-    ),
-    QuickAction(
-      'View Transactions',
-      Icons.format_list_bulleted,
-      Colors.grey[700]!,
-      () {
-        debugPrint('View Transactions tapped');
-        // Add your transactions view logic here
-      },
-    ),
-    QuickAction(
-      'View Categories',
-      Icons.pie_chart,
-      Colors.orange,
-      () {
-        debugPrint('Expense Categories tapped');
-        // Add your categories logic here
-      },
     ),
   ];
 
@@ -186,6 +130,63 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     MonthlyData(month: 'Mar', income: 1.0, expenses: 0.8, investments: 0.3),
   ];
 
+  final List<QuickAction> _quickActions = [
+    QuickAction(
+      'Upload Statement',
+      Icons.upload_file,
+      const Color(0xFF2B4380),
+          () {
+        debugPrint('Upload Statement tapped');
+        // Add your upload statement logic here
+      },
+    ),
+    QuickAction(
+      'Add Income',
+      Icons.add,
+      Colors.green,
+          () {
+        debugPrint('Add Income tapped');
+        // Add your income logic here
+      },
+    ),
+    QuickAction(
+      'Add Expense',
+      Icons.remove,
+      Colors.redAccent,
+          () {
+        debugPrint('Add Expense tapped');
+        // Add your expense logic here
+      },
+    ),
+    QuickAction(
+      'Add Investment',
+      Icons.trending_up,
+      Colors.blue,
+          () {
+        debugPrint('Add Investment tapped');
+        // Add your investment logic here
+      },
+    ),
+    QuickAction(
+      'View Transactions',
+      Icons.format_list_bulleted,
+      Colors.grey[700]!,
+          () {
+        debugPrint('View Transactions tapped');
+        // Add your transactions view logic here
+      },
+    ),
+    QuickAction(
+      'View Categories',
+      Icons.pie_chart,
+      Colors.orange,
+          () {
+        debugPrint('Expense Categories tapped');
+        // Add your categories logic here
+      },
+    ),
+  ];
+
   late AnimationController _controller;
   bool _isFinancialYearView = true;
   int _currentOverviewIndex = 0;
@@ -193,6 +194,11 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    StatusBarConfig.setCustomStatusBar(
+      statusBarColor: Color(0xFF2B4380),
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
+    );
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
