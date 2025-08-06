@@ -1,0 +1,64 @@
+name: onmitrix
+description: Investment tracking application
+version: 1.0.0+25
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  fl_chart: ^0.66.2
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  # State Management
+  provider: ^6.1.1
+
+  # Network
+  dio: ^5.4.0
+  json_annotation: ^4.9.0
+
+  # UI Components
+  google_fonts: ^6.1.0
+  lottie: ^2.7.0
+  flutter_svg: ^2.0.9
+  cached_network_image: ^3.3.1
+
+  # Utils
+  shared_preferences: ^2.2.2
+  intl: ^0.19.0
+  logger: ^2.0.2+1
+
+  # Authentication
+  google_sign_in: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.4.8
+  json_serializable: ^6.7.1
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/animations/
+    - assets/fonts/
+    - assets/images/money_bag.svg
+    - assets/images/money_bag_small.svg
+    - assets/images/shield.svg
+    - assets/images/chart.svg
+    - assets/images/sync.svg
+    - assets/images/clock.svg
+    - assets/animations/loading.json
+
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/opensans_regular.ttf
+        - asset: assets/fonts/opensans_bold.ttf
+          weight: 700
+        - asset: assets/fonts/opensans_semibold.ttf
+          weight: 600

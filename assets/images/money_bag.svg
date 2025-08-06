@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 10C45 10 35 15 30 25L20 45C15 60 20 80 50 90C80 80 85 60 80 45L70 25C65 15 55 10 50 10Z" fill="#FFD700"/>
+  <path d="M45 0H55L60 10H40L45 0Z" fill="#FFD700"/>
+  <path d="M50 30C45 30 40 35 40 40C40 45 45 50 50 50C55 50 60 45 60 40C60 35 55 30 50 30Z" fill="#2B4380"/>
+  <text x="50" y="43" font-family="Arial" font-size="20" fill="#2B4380" text-anchor="middle">$</text>
+</svg>
