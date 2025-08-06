@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../models/monthly_overview_data.dart';
+import '../../../models/overview_card_data.dart';
+import '../../../models/money_overview_data.dart';
+import '../../../models/metric_card_data.dart';
 import '../../../utils/animation_utils.dart';
 import '../../../widgets/cards/overview_card.dart';
 import '../../../widgets/cards/metric_card.dart';
@@ -17,6 +20,49 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
+  final List<OverviewCardData> _overviewCards = [
+    OverviewCardData(
+      title: 'Total Net Worth',
+      amount: '₹0.00',
+      subtitle: 'As of 2025-08-06',
+      icon: Icons.account_balance_wallet,
+      color: Colors.blue,
+      buttonText: 'Analysis',
+    ),
+    OverviewCardData(
+      title: 'Assets',
+      amount: '₹0.00',
+      subtitle: '0 items',
+      icon: Icons.home,
+      color: Colors.green,
+      buttonText: 'Add',
+    ),
+    OverviewCardData(
+      title: 'Liabilities',
+      amount: '₹0.00',
+      subtitle: '0 items',
+      icon: Icons.credit_card,
+      color: Colors.red,
+      buttonText: 'Add',
+    ),
+    OverviewCardData(
+      title: 'Investments',
+      amount: '₹0.00',
+      subtitle: 'Portfolio',
+      icon: Icons.trending_up,
+      color: Colors.purple,
+      buttonText: 'View',
+    ),
+    OverviewCardData(
+      title: 'Liquid Savings',
+      amount: '₹0.00',
+      subtitle: '0 items',
+      icon: Icons.library_add,
+      color: Colors.purple,
+      buttonText: '',
+    ),
+  ];
+
   final List<QuickAction> _quickActions = [
     QuickAction(
       'Upload Statement',
@@ -73,6 +119,58 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       },
     ),
   ];
+
+  final List<MetricCardData> _metricCards = [
+    MetricCardData(
+      title: 'Income',
+      amount: '₹0.00',
+      color: Colors.green,
+      icon: Icons.trending_up,
+      buttonText: 'Manage Income',
+    ),
+    MetricCardData(
+      title: 'Expenses',
+      amount: '₹0.00',
+      color: Colors.red,
+      icon: Icons.trending_down,
+      buttonText: 'Manage Expenses',
+    ),
+    MetricCardData(
+      title: 'Investments',
+      amount: '₹0.00',
+      color: Colors.blue,
+      icon: Icons.account_balance,
+      buttonText: 'Manage Investments',
+    ),
+    MetricCardData(
+      title: 'Net Savings',
+      amount: '₹0.00',
+      color: Colors.purple,
+      icon: Icons.savings,
+      buttonText: 'Income - Expenses',
+      isButton: false,
+    ),
+  ];
+
+  final List<MoneyOverviewData> _moneyOverviewCards = [
+    MoneyOverviewData(
+      title: 'Money Owed to You',
+      total: '₹0.00',
+      pending: '0',
+      overdue: '0',
+      color: Colors.green,
+      buttonText: 'View Receivables',
+    ),
+    MoneyOverviewData(
+      title: 'Money You Owe',
+      total: '₹0.00',
+      pending: '0',
+      overdue: '0',
+      color: Colors.orange,
+      buttonText: 'View Payables',
+    ),
+  ];
+
   final List<MonthlyData> monthlyDataList = [
     MonthlyData(month: 'Apr', income: 0.5, expenses: 0.3, investments: 0.2),
     MonthlyData(month: 'May', income: 0.8, expenses: 0.6, investments: 0.1),
@@ -87,6 +185,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     MonthlyData(month: 'Feb', income: 0.7, expenses: 0.6, investments: 0.4),
     MonthlyData(month: 'Mar', income: 1.0, expenses: 0.8, investments: 0.3),
   ];
+
   late AnimationController _controller;
   bool _isFinancialYearView = true;
   int _currentOverviewIndex = 0;
@@ -109,6 +208,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final cardHeight = MediaQuery.of(context).size.height * 0.18;
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: SafeArea(
@@ -165,63 +265,55 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                       ),
                       const SizedBox(height: 20),
                       SizedBox(
-                        height: 160,
-                        child: PageView(
-                          onPageChanged: (index) {
-                            setState(() => _currentOverviewIndex = index);
+                        height: (cardHeight * 1.2),
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (scrollNotification) {
+                            if (scrollNotification
+                                is ScrollUpdateNotification) {
+                              final currentPixels =
+                                  scrollNotification.metrics.pixels;
+                              final viewportWidth =
+                                  MediaQuery.of(context).size.width * 0.85;
+                              final spacing = 12.0; // Same as separator width
+                              final totalWidth = viewportWidth + spacing;
+                              final newIndex =
+                                  (currentPixels / totalWidth).round();
+                              if (newIndex != _currentOverviewIndex) {
+                                setState(
+                                    () => _currentOverviewIndex = newIndex);
+                              }
+                            }
+                            return true;
                           },
-                          children: [
-                            OverviewCard(
-                              title: 'Total Net Worth',
-                              amount: '₹0.00',
-                              subtitle: 'As of 2025-08-06',
-                              icon: Icons.account_balance_wallet,
-                              color: Colors.blue,
-                              buttonText: 'Analysis',
-                              onButtonPressed: () {},
-                            ),
-                            OverviewCard(
-                              title: 'Assets',
-                              amount: '₹0.00',
-                              subtitle: '0 items',
-                              icon: Icons.home,
-                              color: Colors.green,
-                              buttonText: 'Add',
-                              onButtonPressed: () {},
-                            ),
-                            OverviewCard(
-                              title: 'Liabilities',
-                              amount: '₹0.00',
-                              subtitle: '0 items',
-                              icon: Icons.credit_card,
-                              color: Colors.red,
-                              buttonText: 'Add',
-                              onButtonPressed: () {},
-                            ),
-                            OverviewCard(
-                              title: 'Investments',
-                              amount: '₹0.00',
-                              subtitle: 'Portfolio',
-                              icon: Icons.trending_up,
-                              color: Colors.purple,
-                              buttonText: 'View',
-                              onButtonPressed: () {},
-                            ),
-                            OverviewCard(
-                                title: "Liquid Savings",
-                                amount: '₹0.00',
-                                subtitle: '0 items',
-                                icon: Icons.library_add,
-                                color: Colors.purple,
-                                buttonText: '')
-                          ],
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            itemCount: _overviewCards.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(width: 12),
+                            itemBuilder: (context, index) {
+                              final cardData = _overviewCards[index];
+                              return SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.85,
+                                child: OverviewCard(
+                                  title: cardData.title,
+                                  amount: cardData.amount,
+                                  subtitle: cardData.subtitle,
+                                  icon: cardData.icon,
+                                  color: cardData.color,
+                                  buttonText: cardData.buttonText,
+                                  onButtonPressed: cardData.onButtonPressed,
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
-                          5,
+                          _overviewCards.length,
                           (index) => Container(
                             width: 8,
                             height: 8,
@@ -318,60 +410,55 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                     AnimationUtils.slideTransition(
                       animation: _controller,
                       direction: SlideDirection.right,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: MetricCard(
-                              title: 'Income',
-                              amount: '₹0.00',
-                              color: Colors.green,
-                              icon: Icons.trending_up,
-                              buttonText: 'Manage Income',
-                              onPressed: () {},
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: MetricCard(
-                              title: 'Expenses',
-                              amount: '₹0.00',
-                              color: Colors.red,
-                              icon: Icons.trending_down,
-                              buttonText: 'Manage Expenses',
-                              onPressed: () {},
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    AnimationUtils.slideTransition(
-                      animation: _controller,
-                      direction: SlideDirection.right,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: MetricCard(
-                              title: 'Investments',
-                              amount: '₹0.00',
-                              color: Colors.blue,
-                              icon: Icons.account_balance,
-                              buttonText: 'Manage Investments',
-                              onPressed: () {},
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: MetricCard(
-                              title: 'Net Savings',
-                              amount: '₹0.00',
-                              color: Colors.purple,
-                              icon: Icons.savings,
-                              buttonText: 'Income - Expenses',
-                              isButton: false,
-                            ),
-                          ),
-                        ],
+                      child: SizedBox(
+                        height: (cardHeight * 2) + 12,
+                        // Height for two rows of cards
+                        child: ListView.separated(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemCount: (_metricCards.length / 2).ceil(),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
+                          itemBuilder: (context, rowIndex) {
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: MetricCard(
+                                    title: _metricCards[rowIndex * 2].title,
+                                    amount: _metricCards[rowIndex * 2].amount,
+                                    color: _metricCards[rowIndex * 2].color,
+                                    icon: _metricCards[rowIndex * 2].icon,
+                                    buttonText:
+                                        _metricCards[rowIndex * 2].buttonText,
+                                    isButton:
+                                        _metricCards[rowIndex * 2].isButton,
+                                    onPressed:
+                                        _metricCards[rowIndex * 2].onPressed,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                if (rowIndex * 2 + 1 < _metricCards.length)
+                                  Expanded(
+                                    child: MetricCard(
+                                      title:
+                                          _metricCards[rowIndex * 2 + 1].title,
+                                      amount:
+                                          _metricCards[rowIndex * 2 + 1].amount,
+                                      color:
+                                          _metricCards[rowIndex * 2 + 1].color,
+                                      icon: _metricCards[rowIndex * 2 + 1].icon,
+                                      buttonText: _metricCards[rowIndex * 2 + 1]
+                                          .buttonText,
+                                      isButton: _metricCards[rowIndex * 2 + 1]
+                                          .isButton,
+                                      onPressed: _metricCards[rowIndex * 2 + 1]
+                                          .onPressed,
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -381,32 +468,32 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
               // Money Overview Section
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: MoneyOverviewCard(
-                        title: 'Money Owed to You',
-                        total: '₹0.00',
-                        pending: '0',
-                        overdue: '0',
-                        color: Colors.green,
-                        buttonText: 'View Receivables',
-                        onPressed: () {},
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: MoneyOverviewCard(
-                        title: 'Money You Owe',
-                        total: '₹0.00',
-                        pending: '0',
-                        overdue: '0',
-                        color: Colors.orange,
-                        buttonText: 'View Payables',
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
+                child: SizedBox(
+                  height: (cardHeight * 1.3) + 12,
+                  child: ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.zero,
+                    itemCount: _moneyOverviewCards.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      final cardData = _moneyOverviewCards[index];
+                      return SizedBox(
+                        width: (MediaQuery.of(context).size.width - 44) / 2,
+                        // (screen width - (padding + separator)) / 2
+                        child: MoneyOverviewCard(
+                          title: cardData.title,
+                          total: cardData.total,
+                          pending: cardData.pending,
+                          overdue: cardData.overdue,
+                          color: cardData.color,
+                          buttonText: cardData.buttonText,
+                          onPressed: cardData.onPressed,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
 

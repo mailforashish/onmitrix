@@ -49,7 +49,8 @@ class _MonthlyOverviewChartState extends State<MonthlyOverviewChart> with Single
 
   @override
   Widget build(BuildContext context) {
-    final months = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+    final data = widget.data ?? [];
+    final maxX = (data.length - 1).toDouble();
 
     return Container(
       height: 300,
@@ -91,9 +92,17 @@ class _MonthlyOverviewChartState extends State<MonthlyOverviewChart> with Single
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
+                      interval: 1,
                       getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < months.length) {
-                          return Text(months[value.toInt()]);
+                        final index = value.toInt();
+                        if (index >= 0 && index < data.length) {
+                          return Text(
+                            data[index].month,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.grey,
+                            ),
+                          );
                         }
                         return const Text('');
                       },
@@ -107,10 +116,12 @@ class _MonthlyOverviewChartState extends State<MonthlyOverviewChart> with Single
                   ),
                 ),
                 borderData: FlBorderData(show: false),
+                minX: 0,
+                maxX: maxX,
                 lineBarsData: [
                   // Income Line
                   LineChartBarData(
-                    spots: (widget.data ?? MonthlyData.getDummyData()).asMap().entries.map((entry) {
+                    spots: (widget.data ?? []).asMap().entries.map((entry) {
                       return FlSpot(entry.key.toDouble(), entry.value.income * _animation.value);
                     }).toList(),
                     isCurved: true,
@@ -123,7 +134,7 @@ class _MonthlyOverviewChartState extends State<MonthlyOverviewChart> with Single
                   ),
                   // Expenses Line
                   LineChartBarData(
-                    spots: (widget.data ?? MonthlyData.getDummyData()).asMap().entries.map((entry) {
+                    spots: (widget.data ?? []).asMap().entries.map((entry) {
                       return FlSpot(entry.key.toDouble(), entry.value.expenses * _animation.value);
                     }).toList(),
                     isCurved: true,
@@ -136,7 +147,7 @@ class _MonthlyOverviewChartState extends State<MonthlyOverviewChart> with Single
                   ),
                   // Investments Line
                   LineChartBarData(
-                    spots: (widget.data ?? MonthlyData.getDummyData()).asMap().entries.map((entry) {
+                    spots: (widget.data ?? []).asMap().entries.map((entry) {
                       return FlSpot(entry.key.toDouble(), entry.value.investments * _animation.value);
                     }).toList(),
                     isCurved: true,
