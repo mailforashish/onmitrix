@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onmitrix/utils/animation_utils.dart';
 import 'package:onmitrix/widgets/buttons/primary_button.dart';
 import 'package:onmitrix/widgets/inputs/custom_text_input.dart';
+import 'package:onmitrix/widgets/dialogs/selection_dialog.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({Key? key}) : super(key: key);
@@ -14,9 +15,15 @@ class _FeedbackScreenState extends State<FeedbackScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   final _formKey = GlobalKey<FormState>();
-  final _feedbackController = TextEditingController();
-  int _selectedRating = 0;
+  final _titleController = TextEditingController();
+  final _messageController = TextEditingController();
+  
+  String _selectedType = 'General';
+  String _selectedPriority = 'Medium';
   bool _isLoading = false;
+
+  final List<String> _types = ['General', 'Bug Report', 'Feature Request', 'Other'];
+  final List<String> _priorities = ['Low', 'Medium', 'High', 'Critical'];
 
   @override
   void initState() {
@@ -28,35 +35,51 @@ class _FeedbackScreenState extends State<FeedbackScreen>
     _animationController.forward();
   }
 
+  void _showTypeSelection() async {
+    await SelectionDialog.show(
+      context: context,
+      title: 'Select Type',
+      items: _types,
+      selectedItem: _selectedType,
+      onSelect: (type) {
+        setState(() => _selectedType = type);
+      },
+    );
+  }
+
+  void _showPrioritySelection() async {
+    await SelectionDialog.show(
+      context: context,
+      title: 'Select Priority',
+      items: _priorities,
+      selectedItem: _selectedPriority,
+      onSelect: (priority) {
+        setState(() => _selectedPriority = priority);
+      },
+    );
+  }
+
   Future<void> _submitFeedback() async {
-    if (!_formKey.currentState!.validate() || _selectedRating == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please provide both rating and feedback'),
-        ),
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
     setState(() => _isLoading = true);
 
     try {
+      // Simulate API call
       await Future.delayed(const Duration(seconds: 2));
       
       if (!mounted) return;
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Thank you for your feedback!'),
-        ),
+        const SnackBar(content: Text('Feedback submitted successfully!')),
       );
       Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to submit feedback. Please try again.'),
-        ),
+        const SnackBar(content: Text('Failed to submit feedback')),
       );
     } finally {
       if (mounted) {
@@ -69,7 +92,18 @@ class _FeedbackScreenState extends State<FeedbackScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Feedback'),
+        title: const Text('Submit Feedback'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/my_feedback');
+            },
+            child: const Text(
+              'My Feedback',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -78,23 +112,136 @@ class _FeedbackScreenState extends State<FeedbackScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AnimationUtils.fadeInTransition(
+              // Title Input
+              AnimationUtils.slideTransition(
                 animation: CurvedAnimation(
                   parent: _animationController,
                   curve: const Interval(0.0, 0.3),
                 ),
-                child: _buildRatingSection(),
+                direction: SlideDirection.right,
+                child: CustomTextInput(
+                  label: 'Title',
+                  hint: 'Title',
+                  controller: _titleController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
+
+              // Message Input
+              AnimationUtils.slideTransition(
+                animation: CurvedAnimation(
+                  parent: _animationController,
+                  curve: const Interval(0.1, 0.4),
+                ),
+                direction: SlideDirection.right,
+                child: CustomTextInput(
+                  label: 'Message',
+                  hint: 'Message',
+                  controller: _messageController,
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your message';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Type Selection
+              AnimationUtils.slideTransition(
+                animation: CurvedAnimation(
+                  parent: _animationController,
+                  curve: const Interval(0.2, 0.5),
+                ),
+                direction: SlideDirection.right,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Type',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: _showTypeSelection,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[300]!),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(_selectedType),
+                            const Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Priority Selection
               AnimationUtils.slideTransition(
                 animation: CurvedAnimation(
                   parent: _animationController,
                   curve: const Interval(0.3, 0.6),
                 ),
                 direction: SlideDirection.right,
-                child: _buildFeedbackSection(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Priority',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: _showPrioritySelection,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[300]!),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(_selectedPriority),
+                            const Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 32),
+
+              // Submit Button
               AnimationUtils.slideTransition(
                 animation: CurvedAnimation(
                   parent: _animationController,
@@ -115,109 +262,11 @@ class _FeedbackScreenState extends State<FeedbackScreen>
     );
   }
 
-  Widget _buildRatingSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'How would you rate our app?',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(5, (index) {
-            final rating = index + 1;
-            return InkWell(
-              onTap: () {
-                setState(() => _selectedRating = rating);
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: _selectedRating == rating
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.star,
-                      color: _selectedRating == rating
-                          ? Colors.white
-                          : Colors.grey[400],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      rating.toString(),
-                      style: TextStyle(
-                        color: _selectedRating == rating
-                            ? Colors.white
-                            : Colors.grey[600],
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFeedbackSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Tell us more about your experience',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        CustomTextInput(
-          label: 'Feedback',
-          hint: 'Write your feedback here...',
-          controller: _feedbackController,
-          maxLines: 5,
-          textCapitalization: TextCapitalization.sentences,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please provide your feedback';
-            }
-            if (value.length < 10) {
-              return 'Feedback must be at least 10 characters long';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Your feedback helps us improve the app for everyone.',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   void dispose() {
     _animationController.dispose();
-    _feedbackController.dispose();
+    _titleController.dispose();
+    _messageController.dispose();
     super.dispose();
   }
 }
